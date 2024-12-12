@@ -13,11 +13,11 @@ from cae import CVAutoencoder, BatchSize, new_latent_dimension
 Epochs = 1500
 sequence_length = 21
 
-encoder_path = "weights/pretrained_encoder.pth"
-decoder_path = "weights/pretrained_decoder.pth"
-lstm_path = "weights/trained_lstm.pth"
+encoder_path = "weights/encoder_weights.pth"
+decoder_path = "weights/decoder_weights.pth"
+lstm_path = "weights/lstm_weights.pth"
 
-file_paths = sorted(glob.glob("data/*-data-*"))
+file_paths = sorted(glob.glob("data/training_data/*-data-*"))
 
 re_numbers = [int(file.split('/')[1].split('-')[0]) for file in file_paths]
 mean_re = np.mean(re_numbers)

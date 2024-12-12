@@ -38,20 +38,7 @@ int main() {
   TOLERANCE = 1.e-6; 
   CFL = 0.8;
 
-/*
-  Re = 40;
-  run();
-
-  Re = 80;
-  run();
-
-  Re = 120;
-  run();
-*/
-  Re = 20;
-  run();
-
-  Re = 180;
+  Re = 100;
   run();
 }
 
