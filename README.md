@@ -1,6 +1,6 @@
 # Convolutional Autoencoder with LSTM for CFD Predictions
 
-This repository contains a machine learning model that combines a **Convolutional Autoencoder (CAE)** and **Long-Short Term Memory (LSTM)** network to predict unsteady flow fields around a two-dimensional cylinder. The model is trained on high-fidelity flow data generated using adaptive mesh refinement (AMR) in Basilisk.
+This repository contains a machine learning model that combines a **Convolutional Autoencoder (CAE)** and **Long-Short Term Memory (LSTM)** network to predict unsteady flow fields around a two-dimensional cylinder. The model is trained on ***Computational Fluid Dynamics Simulations (CFD)*** using Basilisk.
 
 ## Features
 - Predicts velocity and pressure fields for various Reynolds numbers.
@@ -11,19 +11,23 @@ This repository contains a machine learning model that combines a **Convolutiona
 ## Project Structure
 ```
 ├── data
-│   ├── training_data
-│   └── validation_data
-├── models
+│   ├── training_data/
+│   └── validation_data/
+├── docs
+│   ├── project_proposal
+│   └── final_report.pdf
+├── weights
 │   ├── cae_model.pth
 │   └── lstm_model.pth
-├── scripts
-│   ├── preprocess_data.py
-│   ├── train_cae.py
-│   ├── train_lstm.py
+├── latent_vectors
+│   ├── latent_predictions_*.npy
+│   └── latent_inputs_*.npy
+├── process.py
+├── cae.py
+├── train.py
+├── validate.py
 │   └── predict.py
-├── results
-│   ├── plots
-│   └── predictions
+
 └── README.md
 ```
 
@@ -34,6 +38,7 @@ This repository contains a machine learning model that combines a **Convolutiona
 - PyTorch
 - NumPy
 - Matplotlib
+- Basilisk (to run simulations)
 
 ### Installation
 1. Clone the repository:
@@ -42,16 +47,19 @@ This repository contains a machine learning model that combines a **Convolutiona
    cd cae_cylinder
    ```
 2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
+   ```bash, e.g.
+   pip3 install torch
    ```
-
+2.1 Install Basilisk (if desired):
+   '''bash, 
+   darcs clone http://basilisk.fr/basilisk
+   '''
 ### Usage
 
-#### 1. Data Preprocessing
+#### 0. Run Simulations (if desired)
 Prepare the training and validation datasets from raw simulation snapshots.
 ```bash
-python scripts/preprocess_data.py
+pyscripts/preprocess_data.py
 ```
 
 #### 2. Train the CAE
