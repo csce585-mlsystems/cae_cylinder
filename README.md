@@ -11,14 +11,16 @@ This repository contains a machine learning model that combines a **Convolutiona
 ## Project Structure
 ```
 ├── data
-│   ├── training_data/
-│   └── validation_data/
+│   ├── training_data.zip
+│   └── validation_data.zip
 ├── docs
 │   ├── project_proposal
+│   ├── final_presentation.pdf
 │   └── final_report.pdf
 ├── weights
-│   ├── cae_model.pth
-│   └── lstm_model.pth
+│   ├── encoder_weights.pth
+│   ├── decoder_weights.pth
+│   └── lstm_weights.pth
 ├── latent_vectors
 │   ├── latent_predictions_*.npy
 │   └── latent_inputs_*.npy
@@ -51,19 +53,38 @@ This repository contains a machine learning model that combines a **Convolutiona
    pip3 install torch
    ```
 2.1 Install Basilisk (if desired):
-   '''bash, 
+   ```bash, 
    darcs clone http://basilisk.fr/basilisk
-   '''
+   ```
+   More information here: http://basilisk.fr/src/INSTALL
+
 ### Usage
 
 #### 0. Run Simulations (if desired)
-Prepare the training and validation datasets from raw simulation snapshots.
+To generate new data, go to the simulation folder.
 ```bash
-pyscripts/preprocess_data.py
+cd sim
+```
+and run the simulation file
+```
+make ibmcylinder.tst
+```
+which can be modified by 
+```
+vim ibmcylinder.c
+```
+and changing Re to the desired value (default is 100)
+``` c
+int main() {
+  ...
+  Re = CHANGE_ME;
+  run();
+}
 ```
 
-#### 2. Train the CAE
+#### 1. Train the CAE
 Train the Convolutional Autoencoder to reconstruct flow fields.
+Assuming all of the data for training is stored in data/training_data
 ```bash
 python scripts/train_cae.py
 ```
@@ -81,9 +102,10 @@ python scripts/predict.py
 ```
 
 ## Results
-- The CAE achieves low reconstruction error on trained Reynolds numbers.
+- The CAE achieves low reconstruction error on trained and most untrained Reynolds numbers.
 - The LSTM captures short-term dynamics but requires improvements for long-term stability.
 - Example results are available in the `results` directory.
+- Video presentation: https://youtu.be/s3koj2zgMiE
 
 ## Future Work
 - Enhance the LSTM architecture for long-term predictions.
@@ -93,10 +115,9 @@ python scripts/predict.py
 ## References
 - Basilisk CFD Solver: [basilisk.fr](http://basilisk.fr)
 - Hasegawa, K., et al. (2020). CNN-LSTM Based Reduced Order Modeling.
-- Bank, D., et al. (2020). Autoencoders.
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
-Special thanks to the University of South Carolina's Computational Thermo-Fluid Laboratory for supporting this work.
+Special thanks to the University of South Carolina's Computational Thermo-Fluid Laboratory and Dr. Pooyan Jamshidi for supporting this work.
