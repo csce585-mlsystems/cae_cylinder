@@ -1,0 +1,10 @@
+.qccXGOH74/ibmcylinder.c:1:7: warning: line number out of range
+ibmcylinder-cpp.c: warning: line number out of range
+<built-in>: warning: line number out of range
+/usr/include/stdc-predef.h:1:7: warning: line number out of range
+././ibm-utils.h: In function ‘dirichlet_gradient_x’:
+././ibm-utils.h:154:10: warning: unused variable ‘defined’ [-Wunused-variable]
+././ibm-utils.h: In function ‘dirichlet_gradient_y’:
+././ibm-utils.h:154:10: warning: unused variable ‘defined’ [-Wunused-variable]
+././ibm-utils.h: In function ‘ibm_dirichlet_gradientv2’:
+././ibm-utils.h:368:9: warning: variable ‘type’ set but not used [-Wunused-but-set-variable]
