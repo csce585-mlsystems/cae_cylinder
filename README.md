@@ -11,8 +11,8 @@ This repository contains a machine learning model that combines a **Convolutiona
 ## Project Structure
 ```
 ├── data
-│   ├── training_data.zip
-│   └── validation_data.zip
+│   ├── training_data/
+│   └── validation_data/
 ├── docs
 │   ├── project_proposal
 │   ├── final_presentation.pdf
@@ -24,12 +24,16 @@ This repository contains a machine learning model that combines a **Convolutiona
 ├── latent_vectors
 │   ├── latent_predictions_*.npy
 │   └── latent_inputs_*.npy
+├── sim
+│   ├── ibmcylinder 
+│   │   └── simulation data
+│   ├── Makefile
+│   ├── ibm*.h
+│   └── ibmclylinder.c
 ├── process.py
 ├── cae.py
 ├── train.py
 ├── validate.py
-│   └── predict.py
-
 └── README.md
 ```
 
@@ -89,23 +93,15 @@ Assuming all of the data for training is stored in data/training_data
 python scripts/train_cae.py
 ```
 
-#### 3. Train the LSTM
-Train the LSTM to predict time-series data in the latent space.
-```bash
-python scripts/train_lstm.py
-```
 
-#### 4. Make Predictions
-Generate predictions for new flow field data.
-```bash
-python scripts/predict.py
-```
 
 ## Results
 - The CAE achieves low reconstruction error on trained and most untrained Reynolds numbers.
 - The LSTM captures short-term dynamics but requires improvements for long-term stability.
 - Example results are available in the `results` directory.
 - Video presentation: https://youtu.be/s3koj2zgMiE
+- Final presentation: docs/final_presentation.pdf
+- Final report: docs/final_report.pdf
 
 ## Future Work
 - Enhance the LSTM architecture for long-term predictions.
