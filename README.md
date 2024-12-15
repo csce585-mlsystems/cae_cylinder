@@ -1,6 +1,6 @@
 # Convolutional Autoencoder with LSTM for CFD Predictions
 
-This repository contains a machine learning model that combines a **Convolutional Autoencoder (CAE)** and **Long-Short Term Memory (LSTM)** network to predict unsteady flow fields around a two-dimensional cylinder. The model is trained on ***Computational Fluid Dynamics Simulations (CFD)*** using Basilisk.
+This repository contains a machine learning model that combines a **Convolutional Autoencoder (CAE)** and **Long-Short Term Memory (LSTM)** network to predict unsteady flow fields around a two-dimensional cylinder, similar to that done by Hasegawa, K., et al. (2020). The model is trained on **Computational Fluid Dynamics Simulations (CFD)** using Basilisk.
 
 ## Features
 - Predicts velocity and pressure fields for various Reynolds numbers.
@@ -64,8 +64,8 @@ This repository contains a machine learning model that combines a **Convolutiona
 
 ### Usage
 
-#### 0. Run Simulations (if desired)
-To generate new data, go to the simulation folder.
+#### 0. Run Simulations (to obtain data)
+The simulation data was too large to upload to GitHub. To generate this simulation data, go to the simulation folder.
 ```bash
 cd sim
 ```
@@ -87,13 +87,132 @@ int main() {
 ```
 
 #### 1. Train the CAE
-Train the Convolutional Autoencoder to reconstruct flow fields.
-Assuming all of the data for training is stored in data/training_data
+Train the Convolutional Autoencoder to reconstruct flow fields. Assuming all of the data for training is stored in **data/training_data**.
+
+Uncomment the **cae_dataset** line in train.py like so
+``` python
+###### Only call one dataset function to save time ######
+cae_dataset = PretrainFlowDataset(file_paths, re_normalize)
+# lstm_dataset = SequenceDataset(file_paths, re_normalize, sequence_length)
+```
+and uncomment the function call to train the CAE
+``` python
+###### Uncomment to train CAE ######
+average_loss = four_fold_cross_validation(
+    model_class=CVAutoencoder,
+    dataset=cae_dataset,
+    num_epochs=Epochs,  # Example epoch count
+    batch_size=BatchSize,  # Adjust as needed
+    learning_rate=1e-3,
+    device=device
+)
+```
+A batch size of 512 was used to train the CAE, although this can be adjusted depending on your machine.
+
+Run the file
 ```bash
-python scripts/train_cae.py
+python3 train.py
 ```
 
+#### 2. Train the LSTM
+To train the LSTM, make sure only **lstm_dataset** set is uncommented
+``` python
+###### Only call one dataset function to save time ######
+# cae_dataset = PretrainFlowDataset(file_paths, re_normalize)
+lstm_dataset = SequenceDataset(file_paths, re_normalize, sequence_length)
+```
+and the **train_lstm function** call is uncommented
+``` python
+###### Uncomment to train LSTM ######
+### Comment out after running once to save a lot of time ###
+precompute_latent_vectors(lstm_dataset, ae.encoder, device, new_latent_dimension, save_path="precomputed_latents.pt")
+trained_lstm = train_lstm(
+    lstm_model=ae.lstm,
+    device=device,
+    batch_size=BatchSize,
+    latent_dim=new_latent_dimension,  # Match your encoder's latent dimension
+    epochs=Epochs,
+    learning_rate=1e-4
+)
+```
+I recommend commenting out the **precompute_latent_vectors** after the first time you run it to save startup time if you decide to retrain the LSTM w/o changing the latent spaces.
 
+Run the file
+```bash
+python3 train.py
+```
+
+#### 3. Validate CAE Results
+
+To test how well the CAE can reconstruct flow fields, simply specify the desired data file
+''' python
+file_path = "data/40-data-100.375"  # file to test CAE reconstruction
+'''
+and uncomment out the function call
+```python
+###### Uncomment to test CAE given a file (file_path) ######
+decode_and_plot_comparison(file_path, encoder_path, decoder_path, device="cuda")
+```
+and run
+```bash
+python3 validate.py
+```
+#### 4. Validate CAE w/LSTM Results
+Make sure to comment out the **decode_and_plot_comparison** function call done in step 3.
+
+Include the file paths of the initial snapshots you want to input into the LSTM (can be any number)
+```python
+sequence_path = [                   # specify what files to input to test LSTM prediction (can be any #)
+    "validate/180-data-100.067",
+    "validate/180-data-100.144",
+     ...
+    "validate/180-data-101.530",
+    "validate/180-data-101.607"
+]
+```
+
+Specify the Reynolds number (Re) that you wish to input into the LSTM and the last time in the given sequence, e.g.
+```python
+startTime = 101.607
+dt = 0.077                          # time interval between snapshots
+RE = 180
+```
+Finally, uncomment out the **recursive_validation_with_plots** function call
+```python
+##### Uncomment to test CAE w/LSTM given a sequence (sequence_path) ######
+recursive_validation_with_plots(
+    encoder_path,
+    decoder_path,
+    lstm_path,
+    file_paths=sequence_path,  # Initial snapshots
+    re_value=re_norm,  # Normalized Reynolds number
+    num_predictions=100,  # Number of recursive predictions
+    ground_truth_dir="data/",
+    output_dir="predicted_snapshots",
+    device="cuda",
+    plot_after=10,  # Generate plots after every 10 predictions
+    start_time=startTime
+)
+```
+and specify the number of predictions and how often to generate plots, default is 
+```python
+plot_after=10,  # Generate plots after every 10 predictions
+```
+and run
+```bash
+python3 visualize/validate.py
+```
+
+#### 5. Plot latent spaces
+You can plot the predicted and target latent spaces using PCA and t-SNE analysis methods using the scripts found in the **visualize/** directory. A few sample latent spaces are already provided in **latent_vectors**, so you can just run the files like
+```bash
+python3 pca.py
+```
+or
+```bash
+python3 t-sne.py
+```
+which will make a pop-up window of the plotted results.
 
 ## Results
 - The CAE achieves low reconstruction error on trained and most untrained Reynolds numbers.
