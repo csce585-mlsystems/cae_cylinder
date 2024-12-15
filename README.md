@@ -231,8 +231,5 @@ which will make a pop-up window of the plotted results.
 - Basilisk CFD Solver: [basilisk.fr](http://basilisk.fr)
 - Hasegawa, K., et al. (2020). CNN-LSTM Based Reduced Order Modeling.
 
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Acknowledgments
 Special thanks to the University of South Carolina's Computational Thermo-Fluid Laboratory and Dr. Pooyan Jamshidi for supporting this work.
